@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Plate Bearing Test</title>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script> -->
+	
+	<script src="vue.js"></script>
+	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+</head>
+<body>
+	<div id="app">
+		<h2 class="text text-center my-3">Plate Bearing Test</h2>
+		<h2 class="text text-center my-3">By Using Linear Regression Method</h2>
+		<div class="container mt-4">
+			<table border="0" class="table-responsive">
+				<thead>
+					<tr>
+						<th class="text-center align-middle" rowspan="2">Sr</th>
+						<th class="text text-center" rowspan="2">Load(Tons)</th>
+						<th class="text-center align-middle" colspan="3">Micrometer</th>
+						<th class="text-center align-middle" colspan="2">Averages</th>
+					</tr>
+					<tr>
+						<th class="text-center align-middle">D1</th>
+						<th class="text-center align-middle">D2</th>
+						<th class="text-center align-middle">D3</th>
+						<th class="text-center align-middle">mm</th>
+						<th class="text-center align-middle">in</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="text-center">1</td>
+						<td class="text-center"><input class="text-right" v-model="t1" type="number" name=""></td>
+						<td><input class="text-right" v-model="R1D1" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R1D2" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R1D3" type="number" name="" ></td>
+						<td>
+						<input class="text-right" v-bind:value="avg1" type="number" disabled="">
+						</td>
+						<td>
+						<input class="text-right" v-model="avgin1" type="number" name="" disabled="">
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center">2</td>
+						<td class="text-center"><input class="text-right" v-model="t2" type="number" name=""></td>
+						<td><input class="text-right" v-model="R2D1" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R2D2" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R2D3" type="number" name="" ></td>
+						<td>
+						<input class="text-right" v-bind:value="avg2" type="number" disabled="">
+						</td>
+						<td>
+						<input class="text-right" v-model="avgin2" type="number" name="" disabled="">
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center">3</td>
+						<td class="text-center"><input class="text-right" v-model="t3" type="number" name=""></td>
+						<td><input class="text-right" v-model="R3D1" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R3D2" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R3D3" type="number" name="" ></td>
+						<td>
+						<input class="text-right" v-bind:value="avg3" type="number" disabled="">
+						</td>
+						<td>
+						<input class="text-right" v-model="avgin3" type="number" name="" disabled="">
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center">4</td>
+						<td class="text-center"><input class="text-right" v-model="t4" type="number" name=""></td>
+						<td><input class="text-right" v-model="R4D1" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R4D2" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R4D3" type="number" name="" ></td>
+						<td>
+						<input class="text-right" v-bind:value="avg4" type="number" disabled="">
+						</td>
+						<td>
+						<input class="text-right" v-model="avgin4" type="number" name="" disabled="">
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center">5</td>
+						<td class="text-center"><input class="text-right" v-model="t5" type="number" name=""></td>
+						<td><input class="text-right" v-model="R5D1" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R5D2" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R5D3" type="number" name="" ></td>
+						<td>
+						<input class="text-right" v-bind:value="avg5" type="number" disabled="">
+						</td>
+						<td>
+						<input class="text-right" v-model="avgin5" type="number" name="" disabled="">
+						</td>
+					</tr>
+					<tr>
+						<td class="text-center">6</td>
+						<td class="text-center"><input class="text-right" v-model="t6" type="number" name=""></td>
+						<td><input class="text-right" v-model="R6D1" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R6D2" type="number" name="" ></td>
+						<td><input class="text-right" v-model="R6D3" type="number" name="" ></td>
+						<td>
+						<input class="text-right" v-bind:value="avg6" type="number" disabled="">
+						</td>
+						<td>
+						<input class="text-right" v-model="avgin6" type="number" name="" disabled="">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p class="text my-5">The equation of the line of the regression y = {{(linearRegression.gain).toFixed(4)}}x {{(linearRegression.offset).toFixed(4)}}. The correlation coefficient r = {{(linearRegression.correlation).toFixed(4)}}</p>
+			<p>Estimate loading(Tons) for reach 0.05 inches = {{((0.05*linearRegression.gain)+linearRegression.offset).toFixed(2)}} Tons</p>
+
+			<div class="text-center">
+				<p class="d-inline-block">Select Your Plate Diameter </p>
+				<select v-model="platetype">
+					<option value="18">K18</option>
+<!-- 					<option value="30">K30</option>
+					<option value="24">K24</option>
+					<option value="12">K12</option> -->
+				</select>
+				<p> K{{platetype}} = {{kvalue}} lb/sq-in</p>
+				<p> K30 = {{k30}} lb/sq-in</p>
+				<h3>California Bearing Ratio (CBR) = {{cbr}} %</h3>
+			</div>
+			<!-- <h1 class="my-5">{{linearRegression}}</h1> -->
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var app = new Vue({
+			el: '#app',
+			data: {
+				R1D1:270,R1D2:0,R1D3:270,t1:1,avgin1:0,
+				R2D1:0,R2D2:520,R2D3:520,t2:2,avgin2:0,
+				R3D1:730,R3D2:770,R3D3:0,t3:3,avgin3:0,
+				R4D1:1170,R4D2:0,R4D3:1150,t4:5,avgin4:0,
+				R5D1:1330,R5D2:1330,R5D3:0,t5:6,avgin5:0,
+				R6D1:0,R6D2:0,R6D3:0,t6:0,avgin6:0,
+				platetype:18,k_value:0,k30:0,
+			},
+			methods:{
+
+			},
+			computed: {
+				avg1(){
+					if (this.R1D1>0 && this.R1D2>0 && this.R1D3>0) {
+						let avg1=((parseInt(this.R1D1)+parseInt(this.R1D2)+parseInt(this.R1D3))/3000).toFixed(4);
+						this.avgin1=(avg1*0.0393701).toFixed(4);
+						return avg1;	
+					}else if (this.R1D1==0 && this.R1D2==0 && this.R1D3==0) {
+						this.avgin1=0;
+						return 0;
+					}else if (this.R1D1>0 && this.R1D2>0) {
+						let avg1=((parseInt(this.R1D1)+parseInt(this.R1D2))/2000).toFixed(4);
+						this.avgin1=(avg1*0.0393701).toFixed(4);
+						return avg1;
+					}else if (this.R1D1>0 && this.R1D3>0) {
+						let avg1=((parseInt(this.R1D1)+parseInt(this.R1D3))/2000).toFixed(4);
+						this.avgin1=(avg1*0.0393701).toFixed(4);
+						return avg1;
+					}else if (this.R1D2>0 && this.R1D3>0) {
+						let avg1=((parseInt(this.R1D2)+parseInt(this.R1D3))/2000).toFixed(4);
+						this.avgin1=(avg1*0.0393701).toFixed(4);
+						return avg1;
+					}else{
+						if (this.R1D1>0) {
+							let avg1=(parseInt(this.R1D1)/1000).toFixed(4);
+							this.avgin1=(avg1*0.0393701).toFixed(4);
+							return avg1;
+						}else if (this.R1D2>0) {
+							let avg1=(parseInt(this.R1D2)/1000).toFixed(4);
+							this.avgin1=(avg1*0.0393701).toFixed(4);
+							return avg1;
+						}else if (this.R1D3>0) {
+							let avg1=(parseInt(this.R1D3)/1000).toFixed(4);
+							this.avgin1=(avg1*0.0393701).toFixed(4);
+							return avg1;
+						}
+					}					
+				},
+				avg2(){
+					if (this.R2D1>0 && this.R2D2>0 && this.R2D3>0) {
+						let avg2=((parseInt(this.R2D1)+parseInt(this.R2D2)+parseInt(this.R2D3))/3000).toFixed(4);
+						this.avgin2=(avg2*0.0393701).toFixed(4);
+						return avg2;	
+					}else if (this.R2D1==0 && this.R2D2==0 && this.R2D3==0) {
+						this.avgin2=0;
+						return 0;
+					}else if (this.R2D1>0 && this.R2D2>0) {
+						let avg2=((parseInt(this.R2D1)+parseInt(this.R2D2))/2000).toFixed(4);
+						this.avgin2=(avg2*0.0393701).toFixed(4);
+						return avg2;
+					}else if (this.R2D1>0 && this.R2D3>0) {
+						let avg2=((parseInt(this.R2D1)+parseInt(this.R2D3))/2000).toFixed(4);
+						this.avgin2=(avg2*0.0393701).toFixed(4);
+						return avg2;
+					}else if (this.R2D2>0 && this.R2D3>0) {
+						let avg2=((parseInt(this.R2D2)+parseInt(this.R2D3))/2000).toFixed(4);
+						this.avgin2=(avg2*0.0393701).toFixed(4);
+						return avg2;
+					}else{
+						if (this.R2D1>0) {
+							let avg2=(parseInt(this.R2D1)/1000).toFixed(4);
+							this.avgin2=(avg2*0.0393701).toFixed(4);
+							return avg2;
+						}else if (this.R2D2>0) {
+							let avg2=(parseInt(this.R2D2)/1000).toFixed(4);
+							this.avgin2=(avg2*0.0393701).toFixed(4);
+							return avg2;
+						}else if (this.R2D3>0) {
+							let avg2=(parseInt(this.R2D3)/1000).toFixed(4);
+							this.avgin2=(avg2*0.0393701).toFixed(4);
+							return avg2;
+						}
+					}					
+				},
+				avg3(){
+					if (this.R3D1>0 && this.R3D2>0 && this.R3D3>0) {
+						let avg3=((parseInt(this.R3D1)+parseInt(this.R3D2)+parseInt(this.R3D3))/3000).toFixed(4);
+						this.avgin3=(avg3*0.0393701).toFixed(4);
+						return avg3;	
+					}else if (this.R3D1==0 && this.R3D2==0 && this.R3D3==0) {
+						this.avgin3=0;
+						return 0;
+					}else if (this.R3D1>0 && this.R3D2>0) {
+						let avg3=((parseInt(this.R3D1)+parseInt(this.R3D2))/2000).toFixed(4);
+						this.avgin3=(avg3*0.0393701).toFixed(4);
+						return avg3;
+					}else if (this.R3D1>0 && this.R3D3>0) {
+						let avg3=((parseInt(this.R3D1)+parseInt(this.R3D3))/2000).toFixed(4);
+						this.avgin3=(avg3*0.0393701).toFixed(4);
+						return avg3;
+					}else if (this.R3D2>0 && this.R3D3>0) {
+						let avg3=((parseInt(this.R3D2)+parseInt(this.R3D3))/2000).toFixed(4);
+						this.avgin3=(avg3*0.0393701).toFixed(4);
+						return avg3;
+					}else{
+						if (this.R3D1>0) {
+							let avg3=(parseInt(this.R3D1)/1000).toFixed(4);
+							this.avgin3=(avg3*0.0393701).toFixed(4);
+							return avg3;
+						}else if (this.R3D2>0) {
+							let avg3=(parseInt(this.R3D2)/1000).toFixed(4);
+							this.avgin3=(avg3*0.0393701).toFixed(4);
+							return avg3;
+						}else if (this.R3D3>0) {
+							let avg3=(parseInt(this.R3D3)/1000).toFixed(4);
+							this.avgin3=(avg3*0.0393701).toFixed(4);
+							return avg3;
+						}
+					}					
+				},
+				avg4(){
+					if (this.R4D1>0 && this.R4D2>0 && this.R4D3>0) {
+						let avg4=((parseInt(this.R4D1)+parseInt(this.R4D2)+parseInt(this.R4D3))/3000).toFixed(4);
+						this.avgin4=(avg4*0.0393701).toFixed(4);
+						return avg4;	
+					}else if (this.R4D1==0 && this.R4D2==0 && this.R4D3==0) {
+						this.avgin4=0;
+						return 0;
+					}else if (this.R4D1>0 && this.R4D2>0) {
+						let avg4=((parseInt(this.R4D1)+parseInt(this.R4D2))/2000).toFixed(4);
+						this.avgin4=(avg4*0.0393701).toFixed(4);
+						return avg4;
+					}else if (this.R4D1>0 && this.R4D3>0) {
+						let avg4=((parseInt(this.R4D1)+parseInt(this.R4D3))/2000).toFixed(4);
+						this.avgin4=(avg4*0.0393701).toFixed(4);
+						return avg4;
+					}else if (this.R4D2>0 && this.R4D3>0) {
+						let avg4=((parseInt(this.R4D2)+parseInt(this.R4D3))/2000).toFixed(4);
+						this.avgin4=(avg4*0.0393701).toFixed(4);
+						return avg4;
+					}else{
+						if (this.R4D1>0) {
+							let avg4=(parseInt(this.R4D1)/1000).toFixed(4);
+							this.avgin4=(avg4*0.0393701).toFixed(4);
+							return avg4;
+						}else if (this.R4D2>0) {
+							let avg4=(parseInt(this.R4D2)/1000).toFixed(4);
+							this.avgin4=(avg4*0.0393701).toFixed(4);
+							return avg4;
+						}else if (this.R4D3>0) {
+							let avg4=(parseInt(this.R4D3)/1000).toFixed(4);
+							this.avgin4=(avg4*0.0393701).toFixed(4);
+							return avg4;
+						}
+					}					
+				},
+				avg5(){
+					if (this.R5D1>0 && this.R5D2>0 && this.R5D3>0) {
+						let avg5=((parseInt(this.R5D1)+parseInt(this.R5D2)+parseInt(this.R5D3))/3000).toFixed(4);
+						this.avgin5=(avg5*0.0393701).toFixed(4);
+						return avg5;	
+					}else if (this.R5D1==0 && this.R5D2==0 && this.R5D3==0) {
+						this.avgin5=0;
+						return 0;
+					}else if (this.R5D1>0 && this.R5D2>0) {
+						let avg5=((parseInt(this.R5D1)+parseInt(this.R5D2))/2000).toFixed(4);
+						this.avgin5=(avg5*0.0393701).toFixed(4);
+						return avg5;
+					}else if (this.R5D1>0 && this.R5D3>0) {
+						let avg5=((parseInt(this.R5D1)+parseInt(this.R5D3))/2000).toFixed(4);
+						this.avgin5=(avg5*0.0393701).toFixed(4);
+						return avg5;
+					}else if (this.R5D2>0 && this.R5D3>0) {
+						let avg5=((parseInt(this.R5D2)+parseInt(this.R5D3))/2000).toFixed(4);
+						this.avgin5=(avg5*0.0393701).toFixed(4);
+						return avg5;
+					}else{
+						if (this.R5D1>0) {
+							let avg5=(parseInt(this.R5D1)/1000).toFixed(4);
+							this.avgin5=(avg5*0.0393701).toFixed(4);
+							return avg5;
+						}else if (this.R5D2>0) {
+							let avg5=(parseInt(this.R5D2)/1000).toFixed(4);
+							this.avgin5=(avg5*0.0393701).toFixed(4);
+							return avg5;
+						}else if (this.R5D3>0) {
+							let avg5=(parseInt(this.R5D3)/1000).toFixed(4);
+							this.avgin5=(avg5*0.0393701).toFixed(4);
+							return avg5;
+						}
+					}					
+				},
+				avg6(){
+					if (this.R6D1>0 && this.R6D2>0 && this.R6D3>0) {
+						let avg6=((parseInt(this.R6D1)+parseInt(this.R6D2)+parseInt(this.R6D3))/3000).toFixed(4);
+						this.avgin6=(avg6*0.0393701).toFixed(4);
+						return avg6;	
+					}else if (this.R6D1==0 && this.R6D2==0 && this.R6D3==0) {
+						this.avgin6=0;
+						return 0;
+					}else if (this.R6D1>0 && this.R6D2>0) {
+						let avg6=((parseInt(this.R6D1)+parseInt(this.R6D2))/2000).toFixed(4);
+						this.avgin6=(avg6*0.0393701).toFixed(4);
+						return avg6;
+					}else if (this.R6D1>0 && this.R6D3>0) {
+						let avg6=((parseInt(this.R6D1)+parseInt(this.R6D3))/2000).toFixed(4);
+						this.avgin6=(avg6*0.0393701).toFixed(4);
+						return avg6;
+					}else if (this.R6D2>0 && this.R6D3>0) {
+						let avg6=((parseInt(this.R6D2)+parseInt(this.R6D3))/2000).toFixed(4);
+						this.avgin6=(avg6*0.0393701).toFixed(4);
+						return avg6;
+					}else{
+						if (this.R6D1>0) {
+							let avg6=(parseInt(this.R6D1)/1000).toFixed(4);
+							this.avgin6=(avg6*0.0393701).toFixed(4);
+							return avg6;
+						}else if (this.R6D2>0) {
+							let avg6=(parseInt(this.R6D2)/1000).toFixed(4);
+							this.avgin6=(avg6*0.0393701).toFixed(4);
+							return avg6;
+						}else if (this.R6D3>0) {
+							let avg6=(parseInt(this.R6D3)/1000).toFixed(4);
+							this.avgin6=(avg6*0.0393701).toFixed(4);
+							return avg6;
+						}
+					}				
+				},
+				linearRegression(){
+					let y=[parseInt(this.t1),parseInt(this.t2),parseInt(this.t3),parseInt(this.t4),parseInt(this.t5),parseInt(this.t6)];
+					let x=[	parseFloat((this.avg1*0.0393701).toFixed(4)),
+							parseFloat((this.avg2*0.0393701).toFixed(4)),
+							parseFloat((this.avg3*0.0393701).toFixed(4)),
+							parseFloat((this.avg4*0.0393701).toFixed(4)),
+							parseFloat((this.avg5*0.0393701).toFixed(4)),
+							parseFloat((this.avg6*0.0393701).toFixed(4))];
+				    let xs = 0;  // sum(x)
+				    let ys = 0;  // sum(y)
+				    let xxs = 0; // sum(x*x)
+				    let xys = 0; // sum(x*y)
+				    let yys = 0; // sum(y*y)
+
+				    let n = 0;
+				    for (; n < x.length && n < y.length; n++)
+				    {
+				        xs += x[n];
+				        ys += y[n];
+				        xxs += x[n] * x[n];
+				        xys += x[n] * y[n];
+				        yys += y[n] * y[n];
+				    }
+
+				    let div = n * xxs - xs * xs;
+				    let gain = (n * xys - xs * ys) / div;
+				    let offset = (ys * xxs - xs * xys) / div;
+				    let correlation = Math.abs((xys * n - xs * ys) / Math.sqrt((xxs * n - xs * xs) * (yys * n - ys * ys)));
+
+				    // return y;
+				    return { gain: gain, offset: offset, correlation: correlation };
+				    // return (0.0524*gain)+offset;
+				},
+				kvalue(){
+					this.k_value=(((0.05*this.linearRegression.gain)+this.linearRegression.offset).toFixed(2)*2240)/(0.05*Math.PI*parseInt(this.platetype)*parseInt(this.platetype)/4);
+					this.k_value=this.k_value.toFixed(2);
+					let temp=this.k_value;
+					this.k30=(temp*0.714).toFixed(2);
+					return this.k_value;
+				},
+				cbr(){
+					let x=[	81.59,	90.44,	100,	111.13,	135.04,
+							155.12,	170.76,	182.11,	189.76,	195.48,
+							200,	200.71,	205.78,	210.53,	215.01,
+							219.61,	223.93,	229.9,	236.48,	245.35,
+							250.58,	257.57,	321.01,	400,	500,
+							573.02,	702.89,	800];
+					let y=[	0,		1,		2,		3,		4,
+							5,		6,		7,		8,		9,
+							10,		11,		13,		14,		15,
+							16,		17,		18,		19,		20,
+							21,		22,		30,		40,		50,
+							60,		80,		100];
+					let k=parseFloat(this.k30);//695.13
+					let n=0;
+					let hit=false;
+					for(; n<x.length && n<y.length;n++){
+						// console.log(x[n]);
+						if (k<x[n]) {
+							var x1=x[n-1],x2=x[n];
+							var y1=y[n-1],y2=y[n];
+							hit=true;
+							break;
+						}
+					}
+					if (hit) {
+						let l2=x2-x1,l1=k-x1;
+						let h2=y2-y1;
+						let h1=(h2*l1)/l2;
+						return y1+parseFloat(h1.toFixed(2));
+						// return x1;
+					}else{
+						return k;
+					}
+				}
+  			}
+		});
+	</script>
+</body>
+</html>
